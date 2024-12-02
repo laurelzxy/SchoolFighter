@@ -4,7 +4,10 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D playerRigidBody;
-    public float playerSpeed = 1f;
+
+    public float playerSpeed = 0.6f;
+    public float currentSpeed;
+
     public Vector2 playerDirection;
 
     private bool isWalking;
@@ -21,6 +24,9 @@ public class PlayerController : MonoBehaviour
 
     private bool comboControl;
 
+    //INdicar se o player esta morto
+    private bool isDead;
+
 
     void Start()
     {
@@ -29,6 +35,8 @@ public class PlayerController : MonoBehaviour
 
         //Obtem e inicializa as propriedades do RigiBody2D
         playerAnimator = GetComponent<Animator>();
+
+        currentSpeed = playerSpeed;
 
 
     }
@@ -40,8 +48,7 @@ public class PlayerController : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.X))
         {
-            if (isWalking == false && !comboControl)
-            {
+           
 
                 if (punchCount < 2)
                 {
@@ -61,10 +68,9 @@ public class PlayerController : MonoBehaviour
                 }
                 
             }
-        }
-
         //Parando o temporizador
         StopCoroutine(CrossController());
+
 
     }
 
@@ -81,7 +87,7 @@ public class PlayerController : MonoBehaviour
         {
             isWalking = false;
         }
-        playerRigidBody.MovePosition(playerRigidBody.position + playerSpeed * Time.fixedDeltaTime * playerDirection);
+        playerRigidBody.MovePosition(playerRigidBody.position + currentSpeed * Time.fixedDeltaTime * playerDirection);
     }
 
     void PlayerMove()
@@ -129,6 +135,16 @@ public class PlayerController : MonoBehaviour
     void PlayerCross()
     {
         playerAnimator.SetTrigger("isCross");
+    }
+
+    void ZeroSpeed ()
+    {
+        currentSpeed = 0;
+    }
+
+    void ResetSpeed()
+    {
+        currentSpeed = playerSpeed;
     }
 
     IEnumerator CrossController()
