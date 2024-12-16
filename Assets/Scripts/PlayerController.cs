@@ -24,8 +24,13 @@ public class PlayerController : MonoBehaviour
 
     private bool comboControl;
 
-    //INdicar se o player esta morto
+    //Indicar se o player esta morto
     private bool isDead;
+
+    //Propriedades para a UI
+    public int maxHealth = 10;
+    public int currentHealth;
+    public Sprite playerImage;
 
 
     void Start()
@@ -37,6 +42,9 @@ public class PlayerController : MonoBehaviour
         playerAnimator = GetComponent<Animator>();
 
         currentSpeed = playerSpeed;
+
+        //Iniciar a vida do player 
+        currentHealth = maxHealth;
 
 
     }
@@ -136,6 +144,14 @@ public class PlayerController : MonoBehaviour
     {
         playerAnimator.SetTrigger("isCross");
     }
+    IEnumerator CrossController()
+    {
+        comboControl = true;
+        yield return new WaitForSeconds(timeCross);
+        punchCount = 0;
+        comboControl = false;
+
+    }
 
     void ZeroSpeed ()
     {
@@ -147,13 +163,16 @@ public class PlayerController : MonoBehaviour
         currentSpeed = playerSpeed;
     }
 
-    IEnumerator CrossController()
+    public void TakeDamage(int damage)
     {
-        comboControl = true;
-        yield return new WaitForSeconds(timeCross);
-        punchCount = 0;
-        comboControl = false;
+        if (!isDead)
+        {
+            currentHealth -= damage;
+            playerAnimator.SetTrigger("HitDamage");
+            FindAnyObjectByType<UIManager>().UpdatePlayerHealth(currentHealth);
+
+        }
 
     }
-    
+
 }
